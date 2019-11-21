@@ -17,10 +17,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Service
 public class RSAExample {
 
-    private static Integer MAX_SIZE_OF_CHUNK = 32;
+//    private static Integer MAX_SIZE_OF_CHUNK = 32;
     private static String KEY_STORE_PWD = "test12";
     private static String KEY_STORE_ALIAS = "testRsa";
     private static String KEY_STORE_INSTANCE = "JCEKS";
+    private static String SIGNATURE_INSTANCE = "SHA256withRSA";
 
     public KeyPair getKeyPairFromKeyStore() throws Exception {
         final InputStream ins = RSAExample.class.getResourceAsStream("/keys/testRsa.jks");
@@ -40,13 +41,9 @@ public class RSAExample {
     }
 
     public String sign(String plainText, PrivateKey privateKey) throws Exception {
-        Signature privateSignature = Signature.getInstance("SHA256withRSA");
+        Signature privateSignature = Signature.getInstance(SIGNATURE_INSTANCE);
         privateSignature.initSign(privateKey);
-        System.out.println("plain text bytes");
-        System.out.println(Arrays.toString(plainText.getBytes(UTF_8)));
         privateSignature.update(plainText.getBytes(UTF_8));
-        System.out.println("Algorithm");
-        System.out.println(privateSignature.getAlgorithm());
 
         byte[] signature = privateSignature.sign();
 
@@ -54,7 +51,7 @@ public class RSAExample {
     }
 
     public boolean verify(String plainText, String signature, PublicKey publicKey) throws Exception {
-        Signature publicSignature = Signature.getInstance("SHA256withRSA");
+        Signature publicSignature = Signature.getInstance(SIGNATURE_INSTANCE);
         publicSignature.initVerify(publicKey);
         publicSignature.update(plainText.getBytes(UTF_8));
 
